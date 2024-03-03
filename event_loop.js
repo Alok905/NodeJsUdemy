@@ -198,3 +198,44 @@ setImmediate(() => console.log('setImmediate 3'))
 // Promise.resolve inside setImmediate
 // setImmediate 3
 */
+
+/*
+setTimeout(() => console.log('setTimeout 1'), 0)
+setImmediate(() => console.log('setImmediate 1'))
+
+// Order of execution can not be guarenteed
+*/
+
+/*
+setTimeout(() => console.log('setTimeout 1'), 0)
+setImmediate(() => console.log('setImmediate 1'))
+for (let i = 0; i < 1000000000; i++);
+
+// o/p:
+// setTimeout 1
+// setImmediate 1
+*/
+
+/*
+// Close Queue
+const fs = require('fs')
+
+const readableStream = fs.createReadStream('./test.txt')
+readableStream.close()
+
+readableStream.on('close', () => {
+    console.log('readable stream closed')
+})
+
+setImmediate(() => console.log('setImmediate 1'))
+setTimeout(() => console.log('setTimeout 1'), 0)
+Promise.resolve().then(() => console.log('Promise.resolve 1'))
+process.nextTick(() => console.log('process.nextTick 1'))
+
+// o/p:
+// process.nextTick 1
+// Promise.resolve 1
+// setTimeout 1
+// setImmediate 1
+// readable stream closed
+*/
