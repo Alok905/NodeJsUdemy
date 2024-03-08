@@ -18,6 +18,7 @@
     "define-data-property": "^1.1.4",
     "depd": "^2.0.0",
     "destroy": "^1.2.0",
+    "dotenv": "^16.4.5",
     "ee-first": "^1.1.1",
     "encodeurl": "^1.0.2",
     "es-define-property": "^1.0.0",
@@ -45,6 +46,7 @@
     "mime": "^1.6.0",
     "mime-db": "^1.52.0",
     "mime-types": "^2.1.35",
+    "mongoose": "^8.2.1",
     "morgan": "^1.10.0",
     "ms": "^2.0.0",
     "negotiator": "^0.6.3",
@@ -72,9 +74,24 @@
     "vary": "^1.1.2"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "start:dev": "nodemon server.js",
+    "start:prod": "NODE_ENV=production nodemon server.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.0",
+    "prettier": "^3.2.5"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  }
 }

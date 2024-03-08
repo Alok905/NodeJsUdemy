@@ -1,85 +1,112 @@
-const fs = require('fs');
+const { default: mongoose } = require('mongoose');
+const Tour = require('../models/tourModel');
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
-
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: { tours },
-  });
-};
-
-exports.getTour = (req, res) => {
-  const id = +req.params.id;
-  const tour = tours.find((tour) => tour.id === id);
-
-  if (!tour) {
-    return res.status(404).json({
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
       status: 'fail',
-      message: 'Invalid id',
+      message: 'Missing name or price',
     });
   }
-  res.status(200).json({
-    status: 'success',
-    data: { tour },
-  });
+
+  next();
 };
 
-exports.createTour = (req, res) => {
-  const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
+exports.getAllTours = async (req, res) => {
+  try {
+    
+    // console.log('helllo',Tour.find() instanceof mongoose.Query)
+    // console.log(mongoose.Query.prototype.__proto__.__proto__.__proto__)
+    // console.log(Promise.prototype.__proto__.__proto__)
+    // console.log(Promise.prototype.__proto__)
+    // console.log(Tour.find() instanceof Promise)
 
-  tours.push(newTour);
+    const tours = await Tour.find();
 
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      console.log(err);
-      res.status(201).json({
-        status: 'success',
-        data: {
-          tour: newTour,
-        },
-      });
-    }
-  );
-};
+    Tour.find().then(data => console.log(data))
+    
+    // console.log(Tour.find().__proto__.constructor)
 
-exports.updateTour = (req, res) => {
-  const id = +req.params.id;
-  const tour = tours.find((tour) => tour.id === id);
-
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid id',
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: { tours },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'failed',
+      message: error,
     });
   }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here>',
-    },
-  });
 };
 
-exports.deleteTour = (req, res) => {
-  const id = +req.params.id;
-  const tour = tours.find((tour) => tour.id === id);
+exports.getTour = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
 
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid id',
+    res.status(200).json({
+      status: 'success',
+      data: { tour },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'failed',
+      message: error,
     });
   }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here>',
-    },
-  });
+};
+
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'failed',
+      message: error,
+    });
+  }
+};
+
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'failed',
+      message: error,
+    });
+  }
+};
+
+exports.deleteTour = async (req, res) => {
+  try {
+    await Tour.findByIdAndDelete(req.params.id);
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'failed',
+      message: error,
+    });
+  }
 };
