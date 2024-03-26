@@ -16,7 +16,8 @@
     "class-methods-use-this": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
     "no-unused-vars": "off",
-    "no-empty":"off"
+    "no-empty":"off",
+    "no-multiple-empty-lines":"off"
     // "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }]
   }
 }
